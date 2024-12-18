@@ -1,4 +1,4 @@
-# note-taker-app
+# Journal App
 
 A journal app written as a personal project.
 
