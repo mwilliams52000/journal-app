@@ -22,6 +22,6 @@ Once Git is installed, you will need to configure your username and email. These
 
 ## Downloading VS Code
 
-Download VS Code from [here](https://code.visualstudio.com/). Once it's opened, install the Python extension [here](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and Live Share extension [here](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare). These will be useful for this project.
+This project was written and tested in VS Code. Download VS Code from [here](https://code.visualstudio.com/). Once it's opened, install the Python extension [here](https://marketplace.visualstudio.com/items?itemName=ms-python.python).
 
-Clone this repo by clicking on the Source Control button on the left toolbar, then click "Clone Repository". You will have to log into GitHub. Make sure to choose **YOUR** fork, not someone else's!
+For testing, clone this repo by clicking on the Source Control button on the left toolbar, then click "Clone Repository". You will have to log into GitHub. Make sure to choose **YOUR** fork, not someone else's!
