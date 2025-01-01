@@ -7,6 +7,8 @@ from tkinter import messagebox
 import os
 import subprocess
 import sys
+import datetime
+from datetime import timedelta
 
 class JournalEntry(tk.Frame):
     def __init__(self, parent, controller):
@@ -16,14 +18,15 @@ class JournalEntry(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)
         self.grid_columnconfigure(2, weight=1)
+        self.dayDelta = timedelta(days=1)
         
-        self.back_button = ttk.Button(self, text="<", bootstyle="light")
+        self.back_button = ttk.Button(self, text="<", bootstyle="light", command=self.backDay)
         self.back_button.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
         
         self.date_label = ttk.Label(self, text="")
         self.date_label.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
         
-        self.forward_button = ttk.Button(self, text=">", bootstyle="light")
+        self.forward_button = ttk.Button(self, text=">", bootstyle="light", command=self.forwardDay)
         self.forward_button.grid(row=0, column=2, padx=10, pady=10, sticky='nsew')
         
         self.text_area = tk.Text(self, undo=True)
@@ -35,12 +38,12 @@ class JournalEntry(tk.Frame):
         self.month = int_month
         self.year = year
         self.day = int_day
-        month = self.switch_month(int_month)
-        day = self.switch_day(int_day)
-        self.date_label.config(text=f"{month} {day}, {year}", font=("Helvetica", 16, "bold"))
+        self.updateLabel()
         # Insert journal content into text area
         self.text_area.insert(tk.END, text_string)
         self.text_area.edit_reset()
+        # Create a date object
+        self.dateObject = datetime.date(self.year, self.month, self.day)
 
     def switch_month(self, value):
         switcher = {
@@ -164,3 +167,37 @@ class JournalEntry(tk.Frame):
         menu_bar.add_command(label="🏠", command=lambda: self.homeCommand(controller))
         # Assign the menu bar to the window
         self.controller.config(menu=menu_bar)
+    
+    # Call when user selects '>' button
+    def forwardDay(self):
+        self.dateObject = self.dateObject + self.dayDelta
+        self.changeDay()
+        
+    # Call when user selects '<' button
+    def backDay(self):
+        self.dateObject = self.dateObject - self.dayDelta
+        self.changeDay()
+    
+    def updateLabel(self):
+        label_month = self.switch_month(self.month)
+        label_day = self.switch_day(self.day)
+        self.date_label.config(text=f"{label_month} {label_day}, {self.year}", font=("Helvetica", 16, "bold"))
+    
+    def changeDay(self):
+        self.year = self.dateObject.year
+        self.month = self.dateObject.month
+        self.day = self.dateObject.day
+        self.text_area.delete("1.0", tk.END)
+        from landing_page import LandingPage
+        # Make sure pickle file exists
+        temp_frame = self.controller.frames[LandingPage]
+        temp_frame.checkFileExistance()
+        # Check if there is a an entry on this day, if there is load it into text area
+        temp_frame.year = self.year
+        temp_frame.month = self.month
+        temp_frame.day = self.day
+        textString = temp_frame.checkDate()
+        if textString == False:
+            textString = ''
+        self.constructTextArea(textString, self.month, self.day, self.year)
+        self.text_area.edit_reset()
